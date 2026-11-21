@@ -1,0 +1,139 @@
+import pandas as pd
+import numpy as np
+
+column_names = [
+    "area",
+    "perimeter",
+    "compactness",
+    "kernel_length",
+    "kernel_width",
+    "asymmetry_coefficient",
+    "kernel_groove_length",
+    "variety_code"
+]
+
+file_name = list(uploaded.keys())[0]
+
+df = pd.read_csv(
+    file_name,
+    sep=r"\s+",
+    header=None,
+    names=column_names
+)
+
+print("Original dataset shape:", df.shape)
+df.head()
+
+variety_names = {
+    1: "Kama",
+    2: "Rosa",
+    3: "Canadian"
+}
+
+df["variety"] = df["variety_code"].map(variety_names)
+
+print("Shape after adding variety names:", df.shape)
+df.head()
+
+  print("First five rows:")
+display(df.head())
+
+print("Last five rows:")
+display(df.tail())
+
+print("Dataset shape:", df.shape)
+
+print("Column information:")
+df.info()
+
+print("Numerical summary:")
+display(df.describe().round(3))
+
+  sample_counts = df["variety"].value_counts()
+print(sample_counts)
+
+
+measurements = ["area", "perimeter", "kernel_length"]
+
+statistics_table = df[measurements].agg(
+    ["mean", "median", "min", "max]
+).T
+
+display(statistics_table.round(3))
+
+measurement_columns = [
+    "area",
+    "perimeter",
+    "compactness",
+    "kernel_length",
+    "kernel_width",
+    "asymmetry_coefficient",
+    "kernel_groove_length"
+]
+
+average_by_variety = df.groupby("variety")[measurement_columns].mean()
+
+display(average_by_variety.round(3))
+
+
+  highest_area_variety = average_by_variety["area"].idxmax()
+highest_width_variety = average_by_variety["kernel_width"].idxmax()
+
+print("Highest average kernel area:", highest_area_variety)
+print("Highest average kernel width:", highest_width_variety)
+
+top_10 = df.sort_values(
+    by="area",
+    ascending=False
+).head(10)
+
+display(top_10[["area", "variety", "perimeter", "kernel_length", "kernel_width"]])
+
+
+  print("Missing values in each column:")
+print(df.isna().sum())
+
+duplicate_count = df.duplicated(subset=column_names).sum()
+print("Duplicate records:", duplicate_count)
+
+
+  print("Samples by variety")
+
+for variety, count in sample_counts.items():
+    print(variety.ljust(10), "#" * int(count), int(count))
+
+  
+  
+  area_values = df["area"].to_numpy()
+
+bin_counts, bin_edges = np.histogram(area_values, bins=8)
+
+print("Kernel area histogram")
+
+for i in range(len(bin_counts)):
+    start = round(bin_edges[i], 1)
+    end = round(bin_edges[i + 1], 1)
+    bar = "#" * int(bin_counts[i])
+
+    print(f"{start} to {end}: {bar} {bin_counts[i]}")
+
+
+  print("1. The dataset has", len(df), "samples.")
+print("   Samples by variety:")
+print(sample_counts)
+
+print(
+    "2.",
+    highest_area_variety,
+    "has the highest average kernel area:",
+    round(average_by_variety.loc[highest_area_variety, "area"], 3)
+)
+
+print(
+    "3. Kernel area ranges from",
+    round(df["area"].min(), 3),
+    "to",
+    round(df["area"].max(), 3)
+)
+  
+  
